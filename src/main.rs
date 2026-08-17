@@ -33,5 +33,9 @@ fn main() {
     println!("{dotenv_file_map:?}");
     println!("{example_file_map:?}");
 
+    for (example_key, example_value) in example_file_map {
+        let dotenv_key = &dotenv_file_map[&example_key];
+    }
+
     println!("all required env vars are present");
 }
