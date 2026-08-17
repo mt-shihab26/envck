@@ -66,6 +66,13 @@ fn fails_when_dotenv_is_empty_but_example_requires_keys() {
 }
 
 #[test]
+fn fails_when_example_is_empty_but_dotenv_has_keys() {
+    run(Some("FOO=bar\n"), Some("")).failure().stdout(contains(
+        ".env has more keys then .env.example. not matched",
+    ));
+}
+
+#[test]
 fn fails_when_required_key_missing_from_dotenv() {
     run(Some("BAZ=qux\n"), Some("FOO=\nBAZ=\n"))
         .failure()
