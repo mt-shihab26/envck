@@ -33,6 +33,8 @@ fn main() {
     for (example_key, _example_value) in &example_file_map {
         let dotenv_value = dotenv_file_map.get(example_key);
         if let None = dotenv_value {
+            println!("{dotenv_file_map:?}");
+            println!("{example_file_map:?}");
             println!(".env.example has more keys then .env. not matched");
             exit(1);
         }
@@ -41,6 +43,8 @@ fn main() {
     for (dotenv_key, _donenv_value) in &dotenv_file_map {
         let example_value = example_file_map.get(dotenv_key);
         if let None = example_value {
+            println!("{dotenv_file_map:?}");
+            println!("{example_file_map:?}");
             println!(".env has more keys then .env.example. not matched");
             exit(1);
         }
