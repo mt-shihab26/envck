@@ -22,17 +22,16 @@ fn run(dotenv: Option<&str>, example: Option<&str>) -> Assert {
 
 #[test]
 fn passes_when_all_keys_present() {
-    run(Some("FOO=bar\n\nBAZ=qux\n"), Some("FOO=\nBAZ=qux\n")).success();
+    run(Some("FOO=bar\n\nBAZ=qux\n"), Some("FOO=\nBAZ=qux\n"))
+        .success()
+        .stdout(contains(".env and .env.example key is match completely"));
 }
 
 #[test]
 fn fails_when_dotenv_has_extra_keys() {
-    run(Some("FOO=bar\nBAZ=qux\nEXTRA=1\n"), Some("FOO=\nBAZ=\n")).failure();
-}
-
-#[test]
-fn fails_when_dotenv_has_key_not_in_example() {
-    run(Some("FOO=bar\nEXTRA=1\n"), Some("FOO=\n")).failure();
+    run(Some("FOO=bar\nBAZ=qux\nEXTRA=1\n"), Some("FOO=\nBAZ=\n"))
+        .failure()
+        .stdout(".env has more keys then .env.example. not matched");
 }
 
 #[test]
