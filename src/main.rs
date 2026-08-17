@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs::read_to_string, io::Result};
+use std::{collections::HashMap, fs::read_to_string, io::Result, process::exit};
 
 fn get_file_content(file_name: &str) -> Result<Vec<String>> {
     let content = read_to_string(file_name)?;
@@ -30,11 +30,20 @@ fn main() {
     let dotenv_file_map = get_file_map(dotenv_file_content);
     let example_file_map = get_file_map(example_file_content);
 
-    println!("{dotenv_file_map:?}");
-    println!("{example_file_map:?}");
+    for (example_key, _example_value) in &example_file_map {
+        let dotenv_value = &dotenv_file_map.get(&example_key);
+        if let None = dotenv_value {
+            println!(".env.example has more keys then .env. not matched");
+            exit(1);
+        }
+    }
 
-    for (example_key, example_value) in example_file_map {
-        let dotenv_key = &dotenv_file_map[&example_key];
+    for (dotenv_key, _donenv_value) in &dotenv_file_map {
+        let example_value = &example_file_map.get(&dotenv_key);
+        if let None = example_value {
+            println!(".env has more keys then .env.example. not matched");
+            exit(1);
+        }
     }
 
     println!("all required env vars are present");
