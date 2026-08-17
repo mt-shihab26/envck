@@ -28,35 +28,49 @@ fn passes_when_all_keys_present() {
 }
 
 #[test]
-fn fails_when_dotenv_has_extra_keys() {
-    run(Some("FOO=bar\nBAZ=qux\nEXTRA=1\n"), Some("FOO=\nBAZ=\n"))
-        .failure()
-        .stdout(".env has more keys then .env.example. not matched");
-}
-
-#[test]
 fn passes_when_required_value_is_empty() {
-    run(Some("FOO=\n"), Some("FOO=\n")).success();
+    run(Some("FOO=\n"), Some("FOO=\n"))
+        .success()
+        .stdout(contains(".env and .env.example key is match completely"));
 }
 
 #[test]
 fn passes_when_example_file_is_empty() {
-    run(Some("FOO=bar\n"), Some("")).success();
+    run(Some("FOO=bar\n"), Some(""))
+        .success()
+        .stdout(contains(".env and .env.example key is match completely"));
+}
+
+#[test]
+fn fails_when_dotenv_has_extra_keys() {
+    run(Some("FOO=bar\nBAZ=qux\nEXTRA=1\n"), Some("FOO=\nBAZ=\n"))
+        .failure()
+        .stdout(contains(
+            ".env has more keys then .env.example. not matched",
+        ));
 }
 
 #[test]
 fn passes_when_value_contains_equals_sign() {
-    run(Some("FOO=bar=baz\n"), Some("FOO=\n")).success();
+    run(Some("FOO=bar=baz\n"), Some("FOO=\n"))
+        .success()
+        .stdout(contains(".env and .env.example key is match completely"));
 }
 
 #[test]
 fn fails_when_required_key_missing_from_dotenv() {
-    run(Some("BAZ=qux\n"), Some("FOO=\nBAZ=\n")).failure();
+    run(Some("BAZ=qux\n"), Some("FOO=\nBAZ=\n"))
+        .failure()
+        .stdout(contains(
+            ".env.example has more keys then .env. not matched",
+        ));
 }
 
 #[test]
 fn fails_when_dotenv_is_empty_but_example_requires_keys() {
-    run(Some(""), Some("FOO=\n")).failure();
+    run(Some(""), Some("FOO=\n")).failure().stdout(contains(
+        ".env.example has more keys then .env. not matched",
+    ));
 }
 
 #[test]
